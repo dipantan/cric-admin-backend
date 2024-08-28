@@ -19,7 +19,7 @@ app.use(
     credentials: true,
     origin: [
       "http://localhost:3030",
-      "https://cric-admin-backend.onrender.com",
+      "https://cric-admin.onrender.com",
     ],
   })
 );
