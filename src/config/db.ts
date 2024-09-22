@@ -1,14 +1,18 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 export const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   database: process.env.DB_NAME,
-  port: parseInt(process.env.DB_PORT || '3306'),
+  port: parseInt(process.env.DB_PORT || "3306"),
   password: process.env.DB_PASS,
 });
 
-const dbConfig = async (sql: string, values: any[] = [], transaction = false) => {
+const dbConfig = async (
+  sql: string,
+  values: any[] = [],
+  transaction = false
+) => {
   const connection = await pool.getConnection();
   try {
     if (transaction) {

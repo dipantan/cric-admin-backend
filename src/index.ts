@@ -2,8 +2,11 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import errorHandler from "strong-error-handler";
+import "reflect-metadata";
+import cron from "node-cron";
 
 import rootRouter from "./routes";
+import { callApiServer } from "./utils";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,10 +20,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "http://localhost:3030",
-      "https://cric-admin.onrender.com",
-    ],
+    origin: ["http://localhost:3030", "https://cric-admin.onrender.com"],
   })
 );
 
@@ -41,4 +41,9 @@ app.use(
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+});
+
+// Schedule a task to run every 14 minutes
+cron.schedule("*/14 * * * *", async () => {
+  await callApiServer();
 });
