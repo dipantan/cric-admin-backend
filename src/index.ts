@@ -7,6 +7,7 @@ import cron from "node-cron";
 
 import rootRouter from "./routes";
 import { callApiServer } from "./utils";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "../src/uploads")));
 app.use(
   cors({
     credentials: true,
