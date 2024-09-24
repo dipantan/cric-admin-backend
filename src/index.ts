@@ -4,6 +4,7 @@ import cors from "cors";
 import errorHandler from "strong-error-handler";
 import "reflect-metadata";
 import cron from "node-cron";
+import serveIndex from "serve-index";
 
 import rootRouter from "./routes";
 import { callApiServer } from "./utils";
@@ -18,7 +19,16 @@ if (!process.env.JWT_SECRET) {
 }
 
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "../src/uploads")));
+
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "./uploads")),
+  serveIndex(path.join(__dirname, "./uploads"), {
+    icons: true,
+    view: "details",
+  })
+);
+
 app.use(
   cors({
     credentials: true,
