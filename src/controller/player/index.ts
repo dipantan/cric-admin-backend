@@ -199,7 +199,8 @@ router.post("/sections", async (req, res) => {
   try {
     const id = req.body.id;
 
-    if (isNaN(id) || !id) {
+    const numericId = Number(id);
+    if (isNaN(numericId) || !numericId) {
       return res.status(400).send({
         status: false,
         message: "Id is required",
@@ -238,6 +239,50 @@ router.post("/sections", async (req, res) => {
       });
     }
 
+    res.status(500).send({
+      status: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+router.delete("/sections/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const numericId = Number(id);
+    if (isNaN(numericId) || !numericId) {
+      return res.status(400).send({
+        status: false,
+        message: "Id is required",
+      });
+    }
+
+    const ids = await dbConfig(`SELECT id FROM players WHERE id = ?`, [id]);
+
+    if (ids.constructor === Array && ids.length === 0) {
+      return res.status(400).send({
+        status: false,
+        message: "Id does not exist",
+      });
+    }
+
+    const sql = `delete from cricexchange.sections where player_id = ?`;
+
+    const query = (await dbConfig(sql, [id])) as ResultSetHeader;
+
+    if (query.affectedRows === 0) {
+      return res.status(400).send({
+        status: false,
+        message: "Player not found",
+      });
+    }
+
+    res.send({
+      status: true,
+      message: "Player removed successfully",
+    });
+  } catch (error) {
     res.status(500).send({
       status: false,
       message: "Internal server error",
